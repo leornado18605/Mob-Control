@@ -15,7 +15,7 @@
 
     public class GameManager : Singleton<GameManager>
     {
-        public GameState CurrentState { get; private set; } = GameState.Playing;
+        public static GameState CurrentState { get; set; } = GameState.Playing;
 
         public event Action OnGameWin;
         public event Action OnGameLose;
@@ -24,52 +24,39 @@
         [SerializeField] private HealthSystem enemyHouseHealth;
         [SerializeField] private HealthSystem playerHealth;
 
-        [Header("Main Camera")]
-        [SerializeField] private Camera cameraMain;
+        [SerializeField] private CameraController cameraController;
 
         [Header("Level System")]
-        [SerializeField] private LevelData[] levels;
         [SerializeField] private GameObject gameObjectA;
-        private int currentLevelIndex = 0;
         [SerializeField] private ObjectPooling objectPool;
         [SerializeField] private GameObject poolRoot;
-
+        [SerializeField] private LevelController levelController;
+        public GameObject GameObjectA => gameObjectA;
         private void Start()
         {
-            if (cameraMain == null) cameraMain = Camera.main;
+            this.levelController.LoadLevel(0);
 
-            LoadLevel(0);
+            if (this.enemyHouseHealth != null)
+            {
+                this.enemyHouseHealth.OnDeath += this.HandleWin;
+            }
 
-            if (enemyHouseHealth != null)
-                enemyHouseHealth.OnDeath += HandleWin;
-
-            if (playerHealth != null)
-                playerHealth.OnDeath += HandleLose;
+            if (this.playerHealth != null)
+            {
+                this.playerHealth.OnDeath += this.HandleLose;
+            }
         }
 
         private void HandleWin()
         {
-            this.AssignTarget(0.75f, 1f);
             if (CurrentState != GameState.Playing) return;
 
+            this.cameraController.AssignTarget(0.75f, 1f);
             CurrentState = GameState.Win;
 
             OnGameWin?.Invoke();
 
             Invoke(nameof(GoToNextLevel), 0.5f);
-        }
-
-        private void AssignTarget(float timeDelay, float timeDuration)
-        {
-            if (cameraMain == null) cameraMain = Camera.main;
-            if (cameraMain == null) return;
-
-            var cameraPosZ = this.levels[this.currentLevelIndex + 1].spawnPoint.transform.position.z;
-
-            DOVirtual.DelayedCall(timeDelay, () =>
-            {
-                cameraMain.transform.DOMoveZ(cameraPosZ, timeDuration);
-            });
         }
 
         private void HandleLose()
@@ -88,18 +75,20 @@
 
             DespawnAllPooledObjects();
 
-            if (currentLevelIndex < levels.Length)
-                levels[currentLevelIndex].levelPrefab.SetActive(false);
+            if (LevelController.currentLevelIndex < this.levelController.Levels.Length)
+            {
+                this.levelController.Levels[LevelController.currentLevelIndex].levelPrefab.SetActive(false);
+            }
 
-            this.currentLevelIndex++;
+            LevelController.currentLevelIndex++;
 
-            if (currentLevelIndex >= levels.Length)
+            if (LevelController.currentLevelIndex >= this.levelController.Levels.Length)
             {
                 Debug.Log("ALL LEVELS COMPLETED!");
                 return;
             }
 
-            this.LoadLevel(this.currentLevelIndex);
+            this.levelController.LoadLevel(LevelController.currentLevelIndex);
         }
 
         private void DespawnAllPooledObjects()
@@ -110,19 +99,6 @@
                 if (child.activeSelf)
                     objectPool.Despawn(child);
             }
-        }
-
-        private void LoadLevel(int index)
-        {
-            CurrentState = GameState.Playing;
-
-            this.levels[index].levelPrefab.SetActive(true);
-
-            Transform target = levels[index].spawnPoint;
-
-            this.gameObjectA.transform
-                .DOMove(target.position, 1f)
-                .SetEase(Ease.InOutSine);
         }
 
         public void PauseGame()

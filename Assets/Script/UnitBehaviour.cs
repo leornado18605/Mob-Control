@@ -49,6 +49,8 @@ namespace Script
             this.healthSystem.OnDeath += this.OnUnitDeath;
         }
 
+
+
         public void PrepareUnit()
         {
             this.healthSystem.Init(this.unitData.maxHealth);
