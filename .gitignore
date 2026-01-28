@@ -1,0 +1,83 @@
+# =========================
+# Unity generated
+# =========================
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+[Mm]emoryCaptures/
+
+# Asset meta data should only be ignored when the corresponding asset is ignored
+# !/[Aa]ssets/**/*.meta
+
+# =========================
+# OS / Editor files
+# =========================
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# =========================
+# IDE generated
+# =========================
+.vscode/
+.vs/
+.idea/
+*.csproj
+*.sln
+*.suo
+*.user
+*.userprefs
+*.pidb
+*.booproj
+*.svd
+*.pdb
+*.mdb
+*.opendb
+*.VC.db
+
+# Rider / JetBrains
+.idea/
+*.iml
+
+# =========================
+# Unity cache / packages
+# =========================
+# Uncomment if you do NOT want to track package lock file
+# Packages/packages-lock.json
+
+# Unity Addressables cache
+[Aa]ssets/[Aa]ddressable[Aa]ssets[Dd]ata/*/*.bin*
+
+# =========================
+# Crash Reports
+# =========================
+sysinfo.txt
+
+# =========================
+# Builds / Exported
+# =========================
+*.apk
+*.aab
+*.unitypackage
+
+# =========================
+# User settings
+# =========================
+UserSettings/
+
+# =========================
+# IL2CPP / Gradle (Android)
+# =========================
+.gradle/
+**/gradle.properties
+**/*.keystore
+**/*.jks
+
+# =========================
+# Optional: Ignore StreamingAssets generated content
+# (remove if you need to commit some files here)
+# =========================
+# [Aa]ssets/[Ss]treaming[Aa]ssets/*
