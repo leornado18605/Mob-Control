@@ -12,5 +12,7 @@ namespace Combat
 
         [Header("Health")]
         public int maxHealth = 100;
+
+        public int damage = 20;
     }
 }

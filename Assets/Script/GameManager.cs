@@ -31,7 +31,7 @@
         [SerializeField] private LevelData[] levels;
         [SerializeField] private GameObject gameObjectA;
         private int currentLevelIndex = 0;
-        private ObjectPooling objectPool;
+        [SerializeField] private ObjectPooling objectPool;
         [SerializeField] private GameObject poolRoot;
 
         private void Start()
@@ -56,8 +56,6 @@
 
             OnGameWin?.Invoke();
 
-            Destroy(this.poolRoot.gameObject);
-
             Invoke(nameof(GoToNextLevel), 0.5f);
         }
 
@@ -81,25 +79,21 @@
             CurrentState = GameState.Lose;
             Time.timeScale = 0f;
 
-            Debug.Log("GAME MANAGER: LOSE");
-            OnGameLose?.Invoke();
+            this.OnGameLose?.Invoke();
         }
 
         private void GoToNextLevel()
         {
             Time.timeScale = 1f;
 
-            if (this.currentLevelIndex < this.levels.Length)
-            {
-                DOVirtual.DelayedCall(3f, () =>
-                {
-                    levels[currentLevelIndex - 1].levelPrefab.SetActive(false);
-                });
-            }
+            DespawnAllPooledObjects();
+
+            if (currentLevelIndex < levels.Length)
+                levels[currentLevelIndex].levelPrefab.SetActive(false);
 
             this.currentLevelIndex++;
 
-            if (this.currentLevelIndex >= levels.Length)
+            if (currentLevelIndex >= levels.Length)
             {
                 Debug.Log("ALL LEVELS COMPLETED!");
                 return;
@@ -108,11 +102,21 @@
             this.LoadLevel(this.currentLevelIndex);
         }
 
+        private void DespawnAllPooledObjects()
+        {
+            for (int i = this.poolRoot.transform.childCount - 1; i >= 0; i--)
+            {
+                var child = poolRoot.transform.GetChild(i).gameObject;
+                if (child.activeSelf)
+                    objectPool.Despawn(child);
+            }
+        }
+
         private void LoadLevel(int index)
         {
             CurrentState = GameState.Playing;
 
-            levels[index].levelPrefab.SetActive(true);
+            this.levels[index].levelPrefab.SetActive(true);
 
             Transform target = levels[index].spawnPoint;
 

@@ -19,8 +19,8 @@ namespace Script
 
         public void Init(int maxHealth)
         {
-            this.maxHealth       = maxHealth;
-            CurrentHealth        = maxHealth;
+            this.maxHealth  = maxHealth;
+            this.CurrentHealth = maxHealth;
 
             this.UpdateUI();
         }
@@ -30,9 +30,9 @@ namespace Script
             if (damage <= 0) return;
 
             this.CurrentHealth -= damage;
-            this.CurrentHealth    =  Mathf.Clamp(CurrentHealth, 0, maxHealth);
+            this.CurrentHealth    =  Mathf.Clamp(this.CurrentHealth, 0, this.maxHealth);
 
-            UpdateUI();
+            this.UpdateUI();
 
             if (CurrentHealth <= 0)
             {
@@ -40,14 +40,15 @@ namespace Script
             }
         }
 
+        // ReSharper disable Unity.PerformanceAnalysis
         public void Die()
         {
             this.OnDeath?.Invoke();
 
-            if (TryGetComponent<Common.PooledObject>(out var pooled))
+            if (this.TryGetComponent<Common.PooledObject>(out var pooled))
                 pooled.Despawn();
             else
-                gameObject.SetActive(false);
+                this.gameObject.SetActive(false);
         }
 
         private void UpdateUI()

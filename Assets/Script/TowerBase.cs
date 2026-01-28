@@ -18,12 +18,10 @@
 
         private void Start()
         {
-            healthSystem.Init(towerData.healthTower);
-            shooter.SetBullet(towerData.bulletDefinition);
+            this.healthSystem.Init(towerData.healthTower);
+            this.shooter.SetBullet(towerData.bulletDefinition);
 
-            healthSystem.Init(towerData.healthTower);
-
-            _loop = StartCoroutine(SpawnLoop());
+            this._loop = this.StartCoroutine(this.SpawnLoop());
         }
 
         private void OnDisable()
@@ -35,8 +33,8 @@
         {
             while (true)
             {
-                float loop  = Mathf.Max(0.05f, towerData.spawnTimeLoop);
-                int   count = Mathf.Max(1, towerData.countSpawn);
+                float loop  = Mathf.Max(0.05f, this.towerData.spawnTimeLoop);
+                int   count = Mathf.Max(1, this.towerData.countSpawn);
 
                 this.shooter.SpawnBurst(count);
 

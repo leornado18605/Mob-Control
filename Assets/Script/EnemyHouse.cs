@@ -2,7 +2,7 @@
 
 namespace Script
 {
-    public class EnemyHouse : Singleton<EnemyHouse>
+    public class EnemyHouse : MonoBehaviour
     {
         [SerializeField] private TowerData    towerData;
         [SerializeField] private HealthSystem healthSystem;
@@ -10,11 +10,11 @@ namespace Script
 
         private void Awake()
         {
-            Health = healthSystem;
+            this.Health = this.healthSystem;
         }
         private void Start()
         {
-            healthSystem.Init(towerData.healthTower);
+            this.healthSystem.Init(towerData.healthTower);
         }
     }
 }

@@ -30,23 +30,23 @@ namespace Script
             this.currentBullet = definition;
         }
 
+        // ReSharper disable Unity.PerformanceAnalysis
         public void SpawnBurst(int amount)
         {
-            if (!CanSpawn(amount)) return;
+            if (!this.CanSpawn(amount)) return;
 
             Vector3 origin = spawnPoint.position;
             Vector3 dir = GetShootDirection();
 
-            for (int i = 0; i < amount; i++)
-                SpawnOne(origin, dir);
+            for (int i = 0; i < amount; i++) this.SpawnOne(origin, dir);
         }
 
         private bool CanSpawn(int amount)
         {
             if (amount <= 0) return false;
-            if (pooling == null) return false;
-            if (spawnPoint == null) return false;
-            if (currentBullet == null) return false;
+            if (this.pooling == null) return false;
+            if (this.spawnPoint == null) return false;
+            if (this.currentBullet == null) return false;
             return true;
         }
 
@@ -64,6 +64,7 @@ namespace Script
 
             if (!obj.TryGetComponent<UnitBehaviour>(out var unit)) return;
 
+            unit.PrepareUnit();
             unit.type = this.spawnType;
             unit.SetRotationByType();
 
@@ -146,12 +147,6 @@ namespace Script
             if (obj == null) return;
 
             this.SetupUnit(obj);
-        }
-
-        public void SetGoals(Transform newEnemyGoal, Transform newCannonGoal)
-        {
-            enemyGoal  = newEnemyGoal;
-            cannonGoal = newCannonGoal;
         }
 
         #endregion

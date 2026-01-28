@@ -32,6 +32,7 @@ namespace Script
         [SerializeField] private float      stopDistance   = 1.2f;
         [SerializeField] private float      resumeDistance = 1.5f;
 
+        [SerializeField] private CollisionManager collisionManager;
         private                  bool       _isAttacking;
         private readonly         Collider[] _hits = new Collider[30];
         private                  Transform  _chaseTarget;
@@ -45,20 +46,37 @@ namespace Script
             this.Agent = this.agent;
             if (this.agent != null) this.agent.updateRotation = false;
 
+            this.healthSystem.OnDeath += this.OnUnitDeath;
         }
 
+        public void PrepareUnit()
+        {
+            this.healthSystem.Init(this.unitData.maxHealth);
+
+            if (this.collisionManager != null)
+            {
+                this.collisionManager.Initialize(this.unitData.damage);
+            }
+
+            this._isAttacking = false;
+        }
         private void Update()
         {
             if (Time.time < this._nextCheck) return;
-            this._nextCheck = Time.time + checkTime;
+            this._nextCheck = Time.time + this.checkTime;
 
             this.Find();
         }
 
         private void Start()
         {
-            healthSystem.Init(unitData.maxHealth);
-            healthSystem.OnDeath += OnUnitDeath;
+            this.healthSystem.Init(unitData.maxHealth);
+            this.healthSystem.OnDeath += OnUnitDeath;
+
+            this.collisionManager.Initialize(unitData.damage);
+
+            this.healthSystem.Init(unitData.maxHealth);
+            this.healthSystem.OnDeath += OnUnitDeath;
         }
         public void SetGoal(Transform goalTf)
         {

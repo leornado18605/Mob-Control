@@ -754,7 +754,7 @@ Rigidbody:
   m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 48
+  m_Constraints: 54
   m_CollisionDetection: 0
 --- !u!136 &-3818732271315649262
 CapsuleCollider:
@@ -828,6 +828,7 @@ MonoBehaviour:
   isEnemyHouse: 0
   stopDistance: 1.2
   resumeDistance: 1.5
+  collisionManager: {fileID: -3896591326624938791}
 --- !u!114 &-9193974970415115170
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -855,9 +856,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fc7e6c728d7241bd99558f98e488f088, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  canonDamageToEnemy: 50
-  enemyDamageToCanon: 50
-  attackInterval: 0.1
+  attackInterval: 0.01
 --- !u!1 &5937243193681469662
 GameObject:
   m_ObjectHideFlags: 0

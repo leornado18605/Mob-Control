@@ -5,73 +5,61 @@ using Script;
 
 public class CollisionManager : MonoBehaviour
 {
-    public int canonDamageToEnemy = 20;
-    public int enemyDamageToCanon = 10;
-    public float attackInterval = 1f;
+    [SerializeField] private float attackInterval = 1f;
 
+    private int         _damage;
+    private IDamageable _currentTarget;
+    private Coroutine   _attackRoutine;
 
-    private IDamageable iDamageAble;
-    private Coroutine _attackRoutine;
+    public void Initialize(int damageValue)
+    {
+        this._damage = damageValue;
+    }
 
     private void OnTriggerEnter(Collider other)
     {
         if (!IsEnemy(other.gameObject)) return;
 
 
-        if (CompareTag("Canon") && EnemyHouse.Instance != null)
+        if (other.TryGetComponent<IDamageable>(out var damageable))
         {
-            iDamageAble = EnemyHouse.Instance.Health;
-        }
-        else
-        {
-            iDamageAble = other.GetComponentInParent<IDamageable>();
-        }
+            this._currentTarget = damageable;
 
-        if (_attackRoutine == null)
-            _attackRoutine = StartCoroutine(AttackLoop());
+            if (this._attackRoutine == null) this._attackRoutine = this.StartCoroutine(this.AttackLoop());
+        }
     }
-
 
     private void OnTriggerExit(Collider other)
     {
-        if (!IsEnemy(other.gameObject)) return;
-        StopAttack();
+        if (!this.IsEnemy(other.gameObject)) return;
+        this.StopAttack();
     }
 
     private IEnumerator AttackLoop()
     {
-        while (this.iDamageAble != null && this.iDamageAble.CurrentHealth > 0)
+        while (this._currentTarget != null && this._currentTarget.CurrentHealth > 0)
         {
-            int dmg = CompareTag("Canon")
-                ? canonDamageToEnemy
-                : enemyDamageToCanon;
-
-            this.iDamageAble.TakeDamage(dmg);
+            this._currentTarget.TakeDamage(_damage);
             yield return new WaitForSeconds(attackInterval);
         }
-
-        _attackRoutine = null;
+        this._attackRoutine = null;
     }
 
     private void StopAttack()
     {
-        if (_attackRoutine != null)
+        if (this._attackRoutine != null)
         {
-            StopCoroutine(_attackRoutine);
-            _attackRoutine = null;
+            this.StopCoroutine(_attackRoutine);
+            this._attackRoutine = null;
         }
-
-        this.iDamageAble = null;
+        _currentTarget = null;
     }
 
     private bool IsEnemy(GameObject other)
     {
-        if (CompareTag("Canon"))
+        if (this.CompareTag("Canon"))
             return other.CompareTag("Enemy") || other.CompareTag("EnemyHouse");
 
-        if (CompareTag("Enemy"))
-            return other.CompareTag("Canon");
-
-        return false;
+        return other.CompareTag("Canon");
     }
 }

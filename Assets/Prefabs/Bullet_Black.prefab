@@ -658,6 +658,7 @@ MonoBehaviour:
   isEnemyHouse: 0
   stopDistance: 0.1
   resumeDistance: 1.5
+  collisionManager: {fileID: -8757642232171223705}
 --- !u!136 &6243561370910008142
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -708,9 +709,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fc7e6c728d7241bd99558f98e488f088, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  canonDamageToEnemy: 50
-  enemyDamageToCanon: 50
-  attackInterval: 0.1
+  attackInterval: 0.01
 --- !u!1 &3199758921364783846
 GameObject:
   m_ObjectHideFlags: 0
