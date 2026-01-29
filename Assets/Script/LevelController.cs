@@ -1,28 +1,37 @@
-﻿namespace Script
+﻿// Trong LevelController.cs
+
+using DG.Tweening;
+using Script;
+using UnityEngine;
+
+public class LevelController : MonoBehaviour
 {
-    using DG.Tweening;
-    using UnityEngine;
+    [SerializeField] private GameManager gameManager;
+    [SerializeField] private LevelData[] levels;
+    [SerializeField] private Shooter     shooter;
 
-    public class LevelController : MonoBehaviour
+    public static int currentLevelIndex = 0;
+
+    public static Transform CurrentEnemyGoal;
+    public static Transform CurrentCanonGoal;
+
+    public LevelData[] Levels => this.levels;
+    public void LoadLevel(int index)
     {
-        [SerializeField] private GameManager gameManager;
-        [SerializeField] private LevelData[] levels;
-        public static int currentLevelIndex = 0;
+        GameManager.CurrentState = GameState.Playing;
+        var data = this.levels[index];
+        data.levelPrefab.SetActive(true);
 
-        public LevelData[] Levels => this.levels;
+        CurrentEnemyGoal = data.enemyGoal.transform;
+        CurrentCanonGoal = data.canonGoal.Length > 0 ? data.canonGoal[0].transform : null;
 
-        public void LoadLevel(int index)
+        if (shooter != null)
         {
-            Debug.Log("Loading level " + index);
-            GameManager.CurrentState = GameState.Playing;
-
-            this.levels[index].levelPrefab.SetActive(true);
-
-            Transform target = levels[index].spawnPoint;
-
-            this.gameManager.GameObjectA.transform
-                .DOMove(target.position, 1f)
-                .SetEase(Ease.InOutSine);
+            shooter.SetGoals(CurrentEnemyGoal, CurrentCanonGoal);
         }
+
+        this.gameManager.GameObjectA.transform
+            .DOMove(data.spawnPoint.position, 1f)
+            .SetEase(Ease.InOutSine);
     }
 }

@@ -20,7 +20,7 @@ namespace Script
         private float _smoothVelocityX;
 
         [Header("Shoot (Player Input)")]
-        [SerializeField] private ShooterManager shooter;
+        [SerializeField] private Shooter spawn;
         [SerializeField] private BulletDefinition currentBullet;
 
         [SerializeField] private EnergyBar energyBar;
@@ -51,7 +51,7 @@ namespace Script
         {
             _targetX = transform.position.x;
 
-            if (currentBullet != null && shooter != null) this.shooter.SetBullet(currentBullet);
+            if (currentBullet != null && this.spawn != null) this.spawn.SetBullet(currentBullet);
 
             //Dotween
             if (barrel != null)
@@ -84,7 +84,7 @@ namespace Script
         private bool CanFire()
         {
             if (Time.time < _nextFireTime) return false;
-            if (shooter == null) return false;
+            if (this.spawn == null) return false;
             if (currentBullet == null) return false;
             return true;
         }
@@ -92,7 +92,7 @@ namespace Script
         private void FireOnce()
         {
             this._nextFireTime = Time.time + Mathf.Max(0f, currentBullet.fireCooldown);
-            this.shooter.SpawnBurst(1);
+            this.spawn.SpawnBurst(1);
 
             if (energyBar != null)
             {
@@ -125,7 +125,7 @@ namespace Script
                 this._mouseDown = false;
                 if (energyBar != null && this.energyBar.OnRelease())
                 {
-                    this.shooter.SpawnSuper();
+                    this.spawn.SpawnSuper();
 
                     this.energyBar.ResetBar();
                 }

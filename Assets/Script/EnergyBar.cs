@@ -10,7 +10,7 @@ namespace Script
         [SerializeField] private int shotsPerEnergy = 3;
         [SerializeField] private int maxEnergy = 21;
         [SerializeField] private Image imageEnergy;
-        [SerializeField] private ShooterManager shooterManager;
+        [SerializeField] private Shooter shooter;
         private int  shotCount;
         private int  energy;
         private bool isFull;

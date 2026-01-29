@@ -6,20 +6,20 @@
 
     public class TowerBase : MonoBehaviour
     {
-        [SerializeField] private ShooterManager      shooter;
+        [SerializeField] private Shooter      spawn;
         [SerializeField] private TowerData    towerData;
         [SerializeField] private HealthSystem healthSystem;
         private                  Coroutine    _loop;
 
         private void OnEnable()
         {
-            if (shooter == null || towerData == null) return;
+            if (this.spawn == null || towerData == null) return;
         }
 
         private void Start()
         {
             this.healthSystem.Init(towerData.healthTower);
-            this.shooter.SetBullet(towerData.bulletDefinition);
+            this.spawn.SetBullet(towerData.bulletDefinition);
 
             this._loop = this.StartCoroutine(this.SpawnLoop());
         }
@@ -36,7 +36,7 @@
                 float loop  = Mathf.Max(0.05f, this.towerData.spawnTimeLoop);
                 int   count = Mathf.Max(1, this.towerData.countSpawn);
 
-                this.shooter.SpawnBurst(count);
+                this.spawn.SpawnBurst(count);
 
                 yield return new WaitForSeconds(loop);
             }

@@ -44,6 +44,12 @@ namespace Script
 
         private Transform goal;
 
+        public void SetGoals(Transform newEnemyGoal, Transform newCanonGoal)
+        {
+            this.enemyGoal = newEnemyGoal;
+            this.canonGoal = newCanonGoal;
+        }
+
         private void OnTriggerEnter(Collider other)
         {
             if (other == null) return;
@@ -52,16 +58,19 @@ namespace Script
             int id = other.gameObject.GetInstanceID();
             if (!this._seen.Add(id)) return;
 
+            var unitType = GetUnitType(other);
+
+            Transform targetGoal = (unitType == EnumSpawnType.Enemy)
+                ? LevelController.CurrentEnemyGoal
+                : LevelController.CurrentCanonGoal;
+
             var spawnCount = GetSpawnCount();
-            var unitType   = GetUnitType(other);
+            var key        = GetPoolKey(other);
 
-            this.goal = (unitType == EnumSpawnType.Enemy) ? enemyGoal : canonGoal;
-
-            var key = GetPoolKey(other);
-            if (string.IsNullOrWhiteSpace(key)) return;
-
-            SpawnClones(key, spawnCount, unitType, goal);
-
+            if (!string.IsNullOrWhiteSpace(key))
+            {
+                SpawnClones(key, spawnCount, unitType, targetGoal);
+            }
         }
 
         private bool CompareTag(Collider other)
