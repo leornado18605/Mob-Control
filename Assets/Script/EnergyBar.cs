@@ -1,116 +1,52 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 
 namespace Script
 {
-    using UnityEngine.UI;
-
     public class EnergyBar : MonoBehaviour
     {
-        [Header("Rule")]
-        [SerializeField] private int shotsPerEnergy = 3;
+        [Header("Settings")]
         [SerializeField] private int maxEnergy = 21;
+        [SerializeField] private int   shotsPerEnergy = 3;
         [SerializeField] private Image imageEnergy;
-        [SerializeField] private Shooter shooter;
+        [SerializeField] private Color normalColor = Color.red;
+        [SerializeField] private Color fullColor   = Color.yellow;
+
         private int  shotCount;
-        private int  energy;
         private bool isFull;
 
-        public int   Energy => energy;
-        public float energyPercent = 0.025f;
+        private int TotalShotsNeeded => maxEnergy * shotsPerEnergy;
 
         public void AddShot(int amount = 1)
         {
-            if (!CanAdd(amount)) return;
+            if (isFull) return;
 
-            AddToShot(amount);
-            UpdateEnergyFromShots();
-        }
-
-        #region Feature: Validate
-        private bool CanAdd(int amount)
-        {
-            if (amount <= 0 || this.isFull) return false;
-            return true;
-        }
-        #endregion
-
-        #region Feature: Shot Count
-        private void AddToShot(int amount)
-        {
             shotCount += amount;
-            this.GetEnergyPercent();
 
-            if (this.IsFullEnergy())
+            float fill = (float)shotCount / TotalShotsNeeded;
+            imageEnergy.fillAmount = fill;
+
+            if (shotCount >= TotalShotsNeeded)
             {
                 isFull                 = true;
-                Debug.Log("IsFull");
-                this.ChangeColorEnergy();
+                imageEnergy.fillAmount = 1f;
+                imageEnergy.color      = fullColor;
+                Debug.Log("ENERGY FULL - READY TO SUPER!");
             }
         }
 
-        private void ChangeColorEnergy()
+        public bool CanFireSuper()
         {
-            this.imageEnergy.color = Color.yellow;
-        }
-        private bool IsFullEnergy()
-        {
-            var numberCheckFull = imageEnergy.fillAmount > 0.999f;
-            return numberCheckFull;
-        }
-        #endregion
-
-        #region Feature: Energy Calcultor
-        private void UpdateEnergyFromShots()
-        {
-            int newEnergy = CalcEnergy(shotCount);
-
-            if (newEnergy >= maxEnergy)
-            {
-                SetFull();
-                return;
-            }
-
-            SetEnergy(newEnergy);
-        }
-
-        private int CalcEnergy(int shots)
-        {
-            int step = Mathf.Max(1, shotsPerEnergy);
-            return shots / step;
-        }
-
-        private void SetFull()
-        {
-            energy = maxEnergy;
-            isFull = true;
-        }
-
-        private void SetEnergy(int value)
-        {
-            energy = value;
-        }
-#endregion
-
-        private float GetEnergyPercent()
-        {
-            var energyFillAmount = imageEnergy.fillAmount += energyPercent;
-            return energyFillAmount;
-        }
-        public bool OnRelease()
-        {
-            if (!isFull) return false;
-
-            Debug.Log("Release -> Fire Super");
-            return true;
+            return this.isFull;
         }
 
         public void ResetBar()
         {
-            imageEnergy.fillAmount = 0;
-            imageEnergy.color      = Color.red;
             shotCount              = 0;
-            energy                 = 0;
             isFull                 = false;
+            imageEnergy.fillAmount = 0f;
+            imageEnergy.color      = normalColor;
+            Debug.Log("Energy Bar Reset");
         }
     }
 }

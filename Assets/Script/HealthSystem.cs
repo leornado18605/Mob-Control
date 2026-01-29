@@ -14,9 +14,9 @@ namespace Script
         public event Action            OnDeath;
         private int                    maxHealth;
 
-        [SerializeField] private bool     isEnemyHouse;
-        [SerializeField] private TMP_Text healthText;
-
+        [SerializeField] private bool             isEnemyHouse;
+        [SerializeField] private TMP_Text         healthText;
+        [SerializeField] private CollisionManager collisionManager;
         public void Init(int maxHealth)
         {
             this.maxHealth  = maxHealth;
@@ -45,6 +45,7 @@ namespace Script
         {
             this.OnDeath?.Invoke();
 
+            this.collisionManager.SpawnParticles();
             if (this.TryGetComponent<Common.PooledObject>(out var pooled))
                 pooled.Despawn();
             else

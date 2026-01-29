@@ -41,6 +41,7 @@ namespace Script
 
         public NavMeshAgent Agent { get; private set; }
 
+
         private void Awake()
         {
             this.Agent = this.agent;
@@ -48,7 +49,6 @@ namespace Script
 
             this.healthSystem.OnDeath += this.OnUnitDeath;
         }
-
 
 
         public void PrepareUnit()

@@ -83,9 +83,9 @@ namespace Script
 
             if (awardAdd == AwardAdd.multi)
             {
-                return countBullet * 2 - 1;
+                return this.countBullet * 2 - 1;
             }
-            int half = countBullet / 2;
+            int half = this.countBullet / 2;
 
             return half <= 0 ? 0 : half;
 

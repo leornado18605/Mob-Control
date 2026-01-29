@@ -6,6 +6,7 @@ using Script;
 public class CollisionManager : MonoBehaviour
 {
     [SerializeField] private float attackInterval = 1f;
+    [SerializeField] private EffectDefinition hitEffect;
 
     private int         _damage;
     private IDamageable _currentTarget;
@@ -35,16 +36,30 @@ public class CollisionManager : MonoBehaviour
         this.StopAttack();
     }
 
+    // ReSharper disable Unity.PerformanceAnalysis
     private IEnumerator AttackLoop()
     {
         while (this._currentTarget != null && this._currentTarget.CurrentHealth > 0)
         {
             this._currentTarget.TakeDamage(_damage);
+
             yield return new WaitForSeconds(attackInterval);
         }
         this._attackRoutine = null;
     }
 
+    public void SpawnParticles()
+    {
+        if (hitEffect != null)
+        {
+            if (this._currentTarget is Component targetComponent)
+            {
+                Vector3 hitPos = targetComponent.transform.position;
+
+                hitEffect.Play(hitPos);
+            }
+        }
+    }
     private void StopAttack()
     {
         if (this._attackRoutine != null)

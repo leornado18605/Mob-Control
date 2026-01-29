@@ -91,6 +91,7 @@ namespace Script
 
         private void FireOnce()
         {
+
             this._nextFireTime = Time.time + Mathf.Max(0f, currentBullet.fireCooldown);
             this.spawn.SpawnBurst(1);
 
@@ -99,15 +100,15 @@ namespace Script
                 this.energyBar.AddShot(1);
             }
 
-            PlayRecoil();
+            this.PlayRecoil();
         }
 
         private void HandleMouseMoveInput()
         {
-            if (TryGetMouseDeltaPixels(out float dxPixels))
-                AccumulateTargetX(dxPixels);
+            if (TryGetMouseDeltaPixels(out float dxPixels)) this.AccumulateTargetX(dxPixels);
         }
 
+        // ReSharper disable Unity.PerformanceAnalysis
         private bool TryGetMouseDeltaPixels(out float dxPixels)
         {
             dxPixels = 0f;
@@ -123,14 +124,18 @@ namespace Script
             if (Input.GetMouseButtonUp(0))
             {
                 this._mouseDown = false;
-                if (energyBar != null && this.energyBar.OnRelease())
-                {
-                    this.spawn.SpawnSuper();
 
-                    this.energyBar.ResetBar();
+                if (energyBar != null)
+                {
+                    if (this.energyBar.CanFireSuper())
+                    {
+                        this.spawn.SpawnSuper();
+                        Debug.Log("FIRE SUPER!");
+
+                        this.energyBar.ResetBar();
+                    }
                 }
                 return false;
-
             }
 
             if (!this._mouseDown) return false;
